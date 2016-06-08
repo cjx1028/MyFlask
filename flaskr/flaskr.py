@@ -1,19 +1,20 @@
 # all the imports
 import sqlite3
+import myconfig
 from flask import Flask, request, session, g, redirect, url_for, \
         abort, render_template, flash
 
-#configuration
-DATABASE = './flaskr.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
 
 # create our little application :)
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object(myconfig.developmentConfig)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
+import logging
+from logging import FileHandler
+file_handler = FileHandler('./logs/test.log', 'a')
+file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(file_handler)
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -70,3 +71,5 @@ def logout():
 
 if __name__ == '__main__':
     app.run('0.0.0.0')
+    app.logger.error('this is a log file test')
+
